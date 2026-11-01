@@ -1,9 +1,11 @@
 'use strict';
 
 (() => {
-  const STORAGE_KEY = 'waypoint.workspace.v1';
-  const ATTACHMENT_DB = 'waypoint.attachments.v1';
-  const REMOTE_API = location.protocol !== 'file:';
+  const LOCAL_PREVIEW = window.WAYPOINT_IS_LOCAL_PREVIEW(location.protocol, location.search);
+  const HOSTED_PREVIEW = LOCAL_PREVIEW && location.protocol !== 'file:';
+  const STORAGE_KEY = HOSTED_PREVIEW ? 'waypoint.preview.workspace.v1' : 'waypoint.workspace.v1';
+  const ATTACHMENT_DB = HOSTED_PREVIEW ? 'waypoint.preview.attachments.v1' : 'waypoint.attachments.v1';
+  const REMOTE_API = location.protocol !== 'file:' && !LOCAL_PREVIEW;
   const MAX_LOCAL_FILE_BYTES = 10 * 1024 * 1024;
   const MAX_REMOTE_FILE_BYTES = 2.5 * 1024 * 1024;
   const $ = (selector, root = document) => root.querySelector(selector);

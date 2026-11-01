@@ -1,8 +1,11 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
 const assert = require('node:assert/strict');
 const test = require('node:test');
 const createCarePathDemo = require('../carepath-demo');
+const isLocalPreview = require('../local-preview');
 const { hashPassword, verifyPassword } = require('../api/_lib/auth');
 const { requireSameOrigin } = require('../api/_lib/http');
 const authHandler = require('../api/auth');
@@ -86,4 +89,12 @@ test('API routes reject invalid origins and unsupported methods before database 
   const attachmentResponse = responseStub();
   await attachmentsHandler({ method: 'PUT', headers: {} }, attachmentResponse);
   assert.equal(attachmentResponse.statusCode, 405);
+});
+
+test('hosted preview URLs load the preview gate and keep the app in local mode', () => {
+  const html = fs.readFileSync(path.join(__dirname, '../Waypoint.html'), 'utf8');
+  assert.match(html, /<script src="local-preview\.js" defer><\/script>/);
+  assert.match(html, /<script src="waypoint\.js" defer><\/script>/);
+  assert.equal(isLocalPreview('https:', '?preview=1'), true);
+  assert.equal(isLocalPreview('https:', ''), false);
 });
