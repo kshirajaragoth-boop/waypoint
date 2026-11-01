@@ -1,0 +1,15 @@
+{
+  "name": "waypoint-research-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "mongodb": "^6.20.0"
+  },
+  "scripts": {
+    "check": "node --check waypoint.js && node --check carepath-demo.js && node --check api/auth.js && node --check api/workspace.js && node --check api/attachments.js",
+    "test": "node --test"
+  }
+}
