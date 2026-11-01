@@ -6,6 +6,7 @@
   const STORAGE_KEY = HOSTED_PREVIEW ? 'waypoint.preview.workspace.v1' : 'waypoint.workspace.v1';
   const ATTACHMENT_DB = HOSTED_PREVIEW ? 'waypoint.preview.attachments.v1' : 'waypoint.attachments.v1';
   const REMOTE_API = location.protocol !== 'file:' && !LOCAL_PREVIEW;
+  const PREVIEW_PROFILE = HOSTED_PREVIEW ? {id:'preview-user',name:'Researcher',email:''} : null;
   const MAX_LOCAL_FILE_BYTES = 10 * 1024 * 1024;
   const MAX_REMOTE_FILE_BYTES = 2.5 * 1024 * 1024;
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -62,7 +63,7 @@
   }
   function blankData() {
     const demo=makeHealthcareDemo();
-    return {profile:null,projects:[demo.project],people:demo.people,demoDismissed:false};
+    return {profile:PREVIEW_PROFILE,projects:[demo.project],people:demo.people,demoDismissed:false};
   }
   function loadData() {
     try {
@@ -92,7 +93,7 @@
         if (!people.some(existing => existing.id === person.id)) people.push(person);
       });
       const demoDismissed=false;
-      return {profile:saved.profile || null, projects, people,demoDismissed};
+      return {profile:saved.profile || PREVIEW_PROFILE, projects, people,demoDismissed};
     } catch { return blankData(); }
   }
   function persist() {
@@ -399,7 +400,7 @@
       localStorage.removeItem(STORAGE_KEY);
       data=blankData();
     }
-    data.profile=null;
+    data.profile=PREVIEW_PROFILE;
     view='chat';activeProjectId=null;activeChatId=null;modal=null;
     if(!REMOTE_API)persist();
     render();
